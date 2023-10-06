@@ -1,0 +1,10 @@
+# Ignore other build specific directories
+__pycache__
+dist
+
+# Ignore other build specific directories
+bin
+
+# Ignore logs
+logs
+*.log
