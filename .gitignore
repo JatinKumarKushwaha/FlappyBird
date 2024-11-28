@@ -1,10 +1,21 @@
-# Ignore other build specific directories
-__pycache__
-dist
+# Config files
+.vscode
+config
+*.cfg
 
-# Ignore other build specific directories
-bin
+# Ignore cache directories
+__pycache__
+
+# Ignore build directories
+build
 
 # Ignore logs
 logs
 *.log
+
+# py venv
+bin
+include
+lib
+lib64
+pyvenv.cfg
