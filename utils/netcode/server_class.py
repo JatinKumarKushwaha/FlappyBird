@@ -11,8 +11,8 @@ BUFFERSIZE = 1024
 class Server:
     def __init__(self) -> None:
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_ip = "127.0.0.1"
-        self.port = 7777
+        self.server_ip: str = "127.0.0.1"
+        self.port: int = 7777
         self.server_address = (self.server_ip, self.port)
         self.clients = []  # Stores tuples of type (client_socket, client_address)
 
@@ -38,7 +38,7 @@ class Server:
             return True
         except socket.error as e:
             log(__name__, e, "error")
-            self.closeConnection()
+            return False
 
     def accept(self):
         try:
@@ -103,6 +103,12 @@ class Server:
             log(__name__, e, "error")
             self.closeConnection()
             return 0
+
+    def receiveFromAll(self):
+        data = []
+        for client in self.clients:
+            data.append(self.receiveFromAddress(client[1]))
+        return data
 
     def closeConnection(self):
         log(__name__, "Closing connection", "info")

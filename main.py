@@ -56,6 +56,7 @@ score = 0
 # For online game
 connection_complete = Event()
 server_code_upate = Event()
+address_already_in_use = Event()
 code_temp = [1, 1, 1, 1, 1, 1]
 
 # Look for flappy_bird.cfg file, if it's not there create one
@@ -103,7 +104,8 @@ def redrawWindow(screen, entities):
 def server(code):
     server = Server()
     if not server.listen():
-        exit()
+        address_already_in_use.set()
+        return
     temp = server.getCode()
     for i in range(len(code)):
         code[i] = int(temp % 10)
@@ -199,6 +201,9 @@ def server(code):
 
 # Online game
 def online_game(code, flag=False):
+    if code == "":
+        return
+
     client = Client()
     if not client.connect():
         return
@@ -370,6 +375,8 @@ def create_server():
     s.start()
     server_code = ""
     while not server_code_upate.is_set():
+        if address_already_in_use.is_set():
+            return ""
         continue
     for c in code_temp:
         server_code += str(c)
