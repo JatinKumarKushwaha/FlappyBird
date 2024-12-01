@@ -30,16 +30,16 @@ window_title = "Flappy Bird"
 pygame.display.set_caption(window_title)
 
 # Screen space
-screen_width = 900
-screen_height = 460
+screen_width = 800
+screen_height = 400
 resolution = (screen_width, screen_height)
 screen = pygame.display.set_mode(resolution)
 
 # Sky
-sky = pygame.image.load("assets/graphics/big_sky.png").convert_alpha()
+sky = pygame.image.load("assets/graphics/sky.png").convert_alpha()
 
 # Ground
-ground = pygame.image.load("assets/graphics/big_ground.png").convert_alpha()
+ground = pygame.image.load("assets/graphics/ground.png").convert_alpha()
 
 # Framerate clock
 clock = pygame.time.Clock()
@@ -142,8 +142,8 @@ def server(code):
         # start_pos -> (x, y)
         # color -> (r, g, b) | (r, g, b, a)
         data[client[1]] = [
-            ((50, int(resolution[1] / 2 + (i * 2)))),
-            ((255, 0 + i * 4, 255 - (i * 2), 255)),
+            ((50, int(resolution[1] / 2 + (i * 3)))),
+            ((55 + i * 10, 0 + i * 4, 255 - (i * 2), 255 - i * 10)),
         ]
         i += 10
 
@@ -279,8 +279,6 @@ def online_game(code, flag=False):
         for data in server_data:  # type:ignore
             if type(data) == dict:
                 players.update(data)
-        print("Players: " + str(players))
-        jump_data = players[client_id][0]
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -298,9 +296,9 @@ def online_game(code, flag=False):
 
             # Handle input
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                jump_data = True  # type:ignore
+                players[client_id][0] = True  # type:ignore
             else:
-                jump_data = False
+                players[client_id][0] = False
             for bird in birdGroup.sprites():
                 if players[bird.getId()][0]:  # type:ignore
                     bird.jump()
@@ -346,7 +344,7 @@ def online_game(code, flag=False):
             for key in players.keys():
                 game_active = players[key][1]
 
-            data[client_id] = [jump_data, game_active]
+            data[client_id] = [players[client_id][0], game_active]
             print(str(client_id) + " sending data: " + str(data))
             client.send(data)
         else:
