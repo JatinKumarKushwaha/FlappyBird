@@ -127,11 +127,14 @@ def server(code):
 
     connection_complete.set()
 
-    # Client addresses
+    # Send client ids
     data = dict()
     for client in clients:
-        client_id = server.receiveFromAddress(client[1])
-        data[client_id] = ""
+        server.sendToAddress(client[1], client[1])
+        data[client[1]] = ""
+
+    for client in clients:
+        server.receiveFromAddress(client[1])
 
     # Send different start_pos and color to all players
     i = 0
@@ -239,10 +242,12 @@ def online_game(code, flag=False):
         pygame.display.update()
         clock.tick(60)
 
-    client_id = client.getAddress()
-    client.send(client_id)
+    # Get id and send response code
+    client_id = client.recieve()
+    client.send(200)
 
     data = client.recieve()
+    print("server initial data: " + str(data))
     for key in data.keys():  # type:ignore
         id = key  # type:ignore
         start_pos = data[key][0]  # type:ignore

@@ -59,12 +59,12 @@ class Server:
         client_code = self.receiveFromAddress(address)
 
         if int(client_code) == self.code:
-            self.sendToAddress(address, pickle.dumps(200))
+            self.sendToAddress(address, 200)
             log(__name__, "Connection valid", "info")
             return True
         else:
             log(__name__, "Incorrect code", "warn")
-            self.sendToAddress(address, pickle.dumps(444))
+            self.sendToAddress(address, 444)
             self.closeConnection()
             return False
 
@@ -80,7 +80,7 @@ class Server:
         try:
             for client in self.clients:
                 if client[1] == address:
-                    client[0].sendall(data)
+                    client[0].sendall(pickle.dumps(data))
                     return
             log(__name__, "Invalid address", "warn")
             return
