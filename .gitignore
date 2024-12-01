@@ -14,8 +14,4 @@ logs
 *.log
 
 # py venv
-bin
-include
-lib
-lib64
-pyvenv.cfg
+pyvenv

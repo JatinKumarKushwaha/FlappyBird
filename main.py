@@ -93,8 +93,6 @@ def redrawWindow(screen, entities):
     # Draw player
     for entity in entities:
         entity.draw(screen)
-    # player.draw(screen)
-    # player2.draw(screen)
 
     # Update frame
     pygame.display.update()
@@ -182,7 +180,7 @@ def server(code):
         for client in clients:
             # Recieve data from all the clients
             recieved_data[client[1]] = server.receiveFromAddress(client[1])[client[1]]  # type: ignore
-            print(recieved_data[client[1]])
+            print(str(client[1]) + ": " + str(recieved_data[client[1]]))
         print("Recieved data: " + str(recieved_data))
 
         pipe_type = randrange(0, 2)
@@ -191,8 +189,9 @@ def server(code):
 
         data_packet.append(pipe_data)
 
-        for i, client in clients:
-            data[client[1]] = recieved_data[client_id]
+        for client in clients:
+            print("client_id: " + str(client[1]))
+            data[client[1]] = recieved_data[client[1]]
         data_packet.append(data)
 
         print("Server sending data: " + str(data_packet))
@@ -340,8 +339,7 @@ def online_game(code, flag=False):
                 pipeGroup.empty()
 
             for key in players.keys():
-                # print(player)
-                game_active = players[key][0]
+                game_active = players[key][1]
 
             data[client_id] = [jump_data, game_active]
             print(str(client_id) + " sending data: " + str(data))
