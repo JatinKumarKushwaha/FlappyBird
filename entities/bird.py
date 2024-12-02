@@ -40,12 +40,6 @@ class Bird(pygame.sprite.Sprite):
     def getId(self):
         return self.id
 
-    def input(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
-            self.gravity = -2
-            self.jump_sound.play()
-
     def apply_gravity(self):
         self.gravity += 0.1
         self.rect.y += int(self.gravity)

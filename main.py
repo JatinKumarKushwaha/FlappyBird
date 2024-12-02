@@ -183,8 +183,6 @@ def server(code):
         for client in clients:
             # Recieve data from all the clients
             recieved_data[client[1]] = server.receiveFromAddress(client[1])[client[1]]  # type: ignore
-            print(str(client[1]) + ": " + str(recieved_data[client[1]]))
-        print("Recieved data: " + str(recieved_data))
 
         pipe_type = randrange(0, 2)
         pipe_x_pos = randrange(resolution[0] + 100, resolution[0] + 500, pipe_width)
@@ -193,11 +191,9 @@ def server(code):
         data_packet.append(pipe_data)
 
         for client in clients:
-            print("client_id: " + str(client[1]))
             data[client[1]] = recieved_data[client[1]]
         data_packet.append(data)
 
-        print("Server sending data: " + str(data_packet))
         server.sendAll(data_packet)
 
 
@@ -247,7 +243,6 @@ def online_game(code, flag=False):
     client.send(200)
 
     data = client.recieve()
-    print("server initial data: " + str(data))
     for key in data.keys():  # type:ignore
         id = key  # type:ignore
         start_pos = data[key][0]  # type:ignore
@@ -275,10 +270,10 @@ def online_game(code, flag=False):
         pipe_data = server_data[0]  # type:ignore
         players = {}
 
-        print("Data form server: " + str(server_data))
         for data in server_data:  # type:ignore
             if type(data) == dict:
                 players.update(data)
+        players[client_id][0] = False
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -289,19 +284,18 @@ def online_game(code, flag=False):
                 pipeGroup.add(
                     Pipe(
                         resolution=resolution,
-                        type=pipe_data[0],  # type:ignore
-                        pipe_x_pos=pipe_data[1],  # type:ignore
+                        type=pipe_data[0],
+                        pipe_x_pos=pipe_data[1],
                     )
                 )
 
             # Handle input
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                players[client_id][0] = True  # type:ignore
-            else:
-                players[client_id][0] = False
-            for bird in birdGroup.sprites():
-                if players[bird.getId()][0]:  # type:ignore
-                    bird.jump()
+                players[client_id][0] = True
+
+        for bird in birdGroup.sprites():
+            if players[bird.getId()][0]:
+                bird.jump()
 
         if game_active:
             # Draw Sky
@@ -335,17 +329,18 @@ def online_game(code, flag=False):
             # Store game_over data
             for bird in birdGroup.sprites():
                 game_active = collision_sprite(bird, pipeGroup)
-
-            if not birdGroup:
-                game_active = False
-                birdGroup.empty()
-                pipeGroup.empty()
+                if not game_active:
+                    bird.kill()
 
             for key in players.keys():
                 game_active = players[key][1]
 
+            if len(birdGroup.sprites()) < 2:
+                game_active = False
+                birdGroup.empty()
+                pipeGroup.empty()
+
             data[client_id] = [players[client_id][0], game_active]
-            print(str(client_id) + " sending data: " + str(data))
             client.send(data)
         else:
             # Show retry screen
@@ -360,6 +355,7 @@ def online_game(code, flag=False):
                 game_active = True
                 if not birdGroup:
                     birdGroup.add(Bird(resolution=resolution, id=1, x=40, y=40))
+
             if keys[pygame.K_SPACE]:
                 game_active = False
                 running = False
