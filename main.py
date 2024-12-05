@@ -30,8 +30,8 @@ window_title = "Flappy Bird"
 pygame.display.set_caption(window_title)
 
 # Screen space
-screen_width = 800
-screen_height = 400
+screen_width = 1000
+screen_height = 600
 resolution = (screen_width, screen_height)
 screen = pygame.display.set_mode(resolution)
 
@@ -112,7 +112,7 @@ def server(code):
 
     clients = []
     i = 0
-    while i != 2:
+    while i != server.MAX_CLIENTS:
         (conn, addr) = server.accept()  # type: ignore
 
         clients.append((conn, addr))
@@ -208,6 +208,10 @@ def online_game(code, flag=False):
     if not client.handShake(code):
         return
 
+    backButton = Button(
+        (resolution[0] / 2), (resolution[1] / 2) + 120, 300, 50, "Back", font
+    )
+
     # Waiting for all connections
     while flag:
         if connection_complete.is_set():
@@ -230,6 +234,12 @@ def online_game(code, flag=False):
             screen,
         )
 
+        backButton.update(screen)
+
+        if backButton.isPressed():
+            # Return to menu
+            return
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -242,14 +252,14 @@ def online_game(code, flag=False):
     client_id = client.recieve()
     client.send(200)
 
-    data = client.recieve()
+    data = client.recieve()  # type:ignore
     for key in data.keys():  # type:ignore
-        id = key  # type:ignore
-        start_pos = data[key][0]  # type:ignore
-        color = data[key][1]  # type:ignore
+        id = key
+        start_pos = data[key][0]
+        color = data[key][1]
         birdGroup.add(
-            Bird(resolution, id, start_pos[0], start_pos[1], color)
-        )  # type:ignore
+            Bird(resolution, id, start_pos[0], start_pos[1], color)  # type:ignore
+        )
 
     start_time = int(pygame.time.get_ticks() / 1000)
     score = 0
@@ -265,12 +275,14 @@ def online_game(code, flag=False):
 
     # Online Game
     while running:
+        if not game_active:
+            continue
 
         server_data = client.recieve()
-        pipe_data = server_data[0]  # type:ignore
+        pipe_data = server_data[0]
         players = {}
 
-        for data in server_data:  # type:ignore
+        for data in server_data:
             if type(data) == dict:
                 players.update(data)
         players[client_id][0] = False
@@ -340,7 +352,7 @@ def online_game(code, flag=False):
                 birdGroup.empty()
                 pipeGroup.empty()
 
-            data[client_id] = [players[client_id][0], game_active]
+            data[client_id] = [players[client_id][0], game_active]  # type:ignore
             client.send(data)
         else:
             # Show retry screen

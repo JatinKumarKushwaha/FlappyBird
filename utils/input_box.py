@@ -27,6 +27,8 @@ class InputBox(pygame.sprite.Sprite):
 
         self.text = text
         self.active = False
+
+        self.textBoxFontSurface = self.font.render(self.text, True, (20, 20, 20))
         self.draw()
 
     def draw(self):
@@ -38,8 +40,6 @@ class InputBox(pygame.sprite.Sprite):
             ),
             pygame.SRCALPHA,
         )
-        if self.fillColors["normal"]:
-            self.image.fill(self.fillColors["normal"])
         self.image.blit(textBoxFontSurface, (5, 5))
         pygame.draw.rect(
             self.image,
@@ -48,6 +48,14 @@ class InputBox(pygame.sprite.Sprite):
             2,
         )
         self.rect = self.image.get_rect(center=(self.x, self.y))
+
+    def animate(self):
+        mousePos = pygame.mouse.get_pos()
+        self.textBoxFontSurface.fill(self.fillColors["normal"])
+        if self.rect.collidepoint(mousePos):
+            self.textBoxFontSurface.fill(self.fillColors["hover"])
+            if pygame.mouse.get_pressed(num_buttons=3)[0]:
+                self.textBoxFontSurface.fill(self.fillColors["active"])
 
     def handle_event(self, event):
         if event.type == pygame.MOUSEBUTTONDOWN and not self.active:
@@ -59,7 +67,6 @@ class InputBox(pygame.sprite.Sprite):
                 self.text = self.text[:-1]
             else:
                 self.text += event.unicode
-            self.draw()
 
     def getText(self):
         return self.text
@@ -74,3 +81,5 @@ class InputBox(pygame.sprite.Sprite):
 
     def update(self, event):
         self.handle_event(event)
+        self.draw()
+        self.animate()

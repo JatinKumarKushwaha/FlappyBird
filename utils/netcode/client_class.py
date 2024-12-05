@@ -9,8 +9,8 @@ BUFFERSIZE = 1024
 class Client:
     def __init__(self) -> None:
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_ip = "127.0.0.1"
-        self.port = 7777
+        self.server_ip: str = socket.gethostbyname(socket.gethostname())
+        self.port: int = 7777
         self.address = (self.server_ip, self.port)
 
     def __del__(self):
@@ -58,6 +58,7 @@ class Client:
         except socket.error as e:
             log(__name__, e, "error")
             self.closeConnection()
+            return ""
 
     def closeConnection(self):
         log(__name__, "Closing connection", "info")

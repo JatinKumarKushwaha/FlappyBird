@@ -10,8 +10,9 @@ BUFFERSIZE = 1024
 
 class Server:
     def __init__(self) -> None:
+        self.MAX_CLIENTS = MAX_CLIENTS
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_ip: str = "127.0.0.1"
+        self.server_ip: str = socket.gethostbyname(socket.gethostname())
         self.port: int = 7777
         self.server_address = (self.server_ip, self.port)
         self.clients = []  # Stores tuples of type (client_socket, client_address)
