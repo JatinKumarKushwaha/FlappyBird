@@ -30,8 +30,8 @@ window_title = "Flappy Bird"
 pygame.display.set_caption(window_title)
 
 # Screen space
-screen_width = 1000
-screen_height = 600
+screen_width = 900
+screen_height = 480
 resolution = (screen_width, screen_height)
 screen = pygame.display.set_mode(resolution)
 
