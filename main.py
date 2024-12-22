@@ -166,7 +166,8 @@ def server(code):
 
     pipe_type = randrange(0, 2)
     pipe_x_pos = randrange(resolution[0] + 100, resolution[0] + 500, pipe_width)
-    pipe_data = [pipe_type, pipe_x_pos]
+    pipe_y_pos = randrange(0, resolution[1] - 100, 100)
+    pipe_data = [pipe_type, pipe_x_pos, pipe_y_pos]
 
     data_packet.append(pipe_data)
 
@@ -186,7 +187,8 @@ def server(code):
 
         pipe_type = randrange(0, 2)
         pipe_x_pos = randrange(resolution[0] + 100, resolution[0] + 500, pipe_width)
-        pipe_data = [pipe_type, pipe_x_pos]
+        pipe_y_pos = randrange(0, resolution[1] - 100, 100)
+        pipe_data = [pipe_type, pipe_x_pos, pipe_y_pos]
 
         data_packet.append(pipe_data)
 
@@ -298,6 +300,7 @@ def online_game(code, flag=False):
                         resolution=resolution,
                         type=pipe_data[0],
                         pipe_x_pos=pipe_data[1],
+                        pipe_y_pos=pipe_data[2],
                     )
                 )
 
@@ -645,6 +648,7 @@ def offline_game():
                             randrange(
                                 resolution[0] + 100, resolution[0] + 500, pipe_width
                             ),
+                            randrange(0, resolution[1] - 100, 100),
                         )
                     )
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
