@@ -20,7 +20,7 @@ class Pipe(pygame.sprite.Sprite):
 
         if type:
             self.image = self.pipe
-            self.rect = self.image.get_rect(midtop=(pipe_x_pos, pipe_y_pos))
+            self.rect = self.image.get_rect(midtop=(pipe_x_pos, pipe_y_pos + 200))
         else:
             self.image = self.upsidedown_pipe
             self.rect = self.image.get_rect(midbottom=(pipe_x_pos, pipe_y_pos))

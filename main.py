@@ -166,7 +166,7 @@ def server(code):
 
     pipe_type = randrange(0, 2)
     pipe_x_pos = randrange(resolution[0] + 100, resolution[0] + 500, pipe_width)
-    pipe_y_pos = randrange(0, resolution[1] - 100, 100)
+    pipe_y_pos = randrange(0, resolution[1] - 220, 100)
     pipe_data = [pipe_type, pipe_x_pos, pipe_y_pos]
 
     data_packet.append(pipe_data)
@@ -187,7 +187,7 @@ def server(code):
 
         pipe_type = randrange(0, 2)
         pipe_x_pos = randrange(resolution[0] + 100, resolution[0] + 500, pipe_width)
-        pipe_y_pos = randrange(0, resolution[1] - 100, 100)
+        pipe_y_pos = randrange(0, resolution[1] - 200, 100)
         pipe_data = [pipe_type, pipe_x_pos, pipe_y_pos]
 
         data_packet.append(pipe_data)
@@ -648,7 +648,7 @@ def offline_game():
                             randrange(
                                 resolution[0] + 100, resolution[0] + 500, pipe_width
                             ),
-                            randrange(0, resolution[1] - 100, 100),
+                            randrange(0, resolution[1] - 220, 100),
                         )
                     )
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
@@ -704,7 +704,11 @@ def offline_game():
             if keys[pygame.K_RETURN]:
                 game_active = True
                 if not birdGroup:
-                    birdGroup.add(Bird(resolution=resolution, id=1, x=40, y=40))
+                    birdGroup.add(
+                        Bird(
+                            resolution=resolution, id=1, x=50, y=int(resolution[1] / 2)
+                        )
+                    )
             if keys[pygame.K_SPACE]:
                 game_active = False
                 running = False
